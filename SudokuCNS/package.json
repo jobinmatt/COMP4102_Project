@@ -12,10 +12,11 @@
     "@ui-kitten/components": "^4.3.2",
     "@ui-kitten/eva-icons": "^4.3.2",
     "expo": "~36.0.0",
+    "expo-camera": "^8.0.0",
+    "expo-permissions": "^8.0.0",
     "react": "~16.9.0",
     "react-dom": "~16.9.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-36.0.0.tar.gz",
-    "react-native-camera": "^3.16.0",
     "react-native-svg": "^11.0.1",
     "react-native-web": "~0.11.7"
   },
