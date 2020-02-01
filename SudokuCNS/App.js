@@ -1,73 +1,82 @@
 import React from 'react';
-import { StyleSheet, Dimensions, Platform, StatusBar } from 'react-native';
+import { StyleSheet, Platform, StatusBar, SafeAreaView } from 'react-native';
 import { ApplicationProvider, Layout, Text, Button } from '@ui-kitten/components';
-import { mapping, light, dark } from '@eva-design/eva';
-import { RNCamera, } from 'react-native-camera';
+import { mapping } from '@eva-design/eva';
+import { light, dark } from './UIComponents/Themes';
 import * as Permissions from 'expo-permissions';
-import { PermissionsAndroid } from 'react-native';
+import { Camera } from 'expo-camera';
 
 const GRANTED = 'granted';
-const DENIED = 'denied';
-var { windowHeight, windowWidth } = Dimensions.get('window');
-
+const DEFAULT_STATUS_TEXT = 'Take a picture of your sudoku puzzle';
+const SNAPSHOT_TAKEN_STATUS_TEXT = 'Snapshot of your sudoku puzzle is available at: ';
 
 export default class App extends React.Component {
   constructor(props) {
     super(props);
+    global.theme = dark;
     this.state = {
-      cameraPermissions: GRANTED //TODO: setting to Granted to bypass screen for now
+      cameraPermission: null,
+      cameraType: Camera.Constants.Type.back,
+      photoUri: '',
     };
-    // this.getCameraPermissions();
   }
 
-  async getCameraPermissions() {
-    if (Platform.OS = 'android') {
-      try {
-        if (this.state.cameraPermissions !== GRANTED) {
-          var granted = await PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.CAMERA, {
-            title: 'This application needs access to the camera to take pictures of sudoku puzzles.',
-            buttonNegative: 'Cancel',
-            buttonPositive: 'OK',
-          },
-          );
-          if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-            this.setState({ cameraPermissions: GRANTED });
-            console.log('You can use the camera');
-          } else {
-            console.log('Camera permission denied');
-          }
-        }
-      } catch (err) {
-        console.warn(err);
-      }
+  componentDidMount() {
+    this._requestCameraPermission();
+  }
+
+  _requestCameraPermission = async () => {
+    const { status } = await Permissions.askAsync(Permissions.CAMERA);
+    this.setState({
+      cameraPermission: status === GRANTED,
+    });
+  };
+
+  takePicture = () => {
+    if (this.camera) {
+      this.camera.takePictureAsync({ onPictureSaved: this.onPictureSaved });
     }
+  };
+
+  onPictureSaved = async photo => {
+    this.setState({ photoUri: photo.uri });
   }
 
   render() {
-    if (this.state.cameraPermissions !== GRANTED) {
+    if (this.state.CameraPermission === false) {
       return (
         <ApplicationProvider mapping={mapping} theme={dark}>
-          <Layout level='3' style={styles.container}>
-            <Text>Please enable camera permissions before using this application.</Text>
-          </Layout>
+          <SafeAreaView>
+            <Layout level='3' style={styles.container}>
+              <Text>Please enable camera permissions before using this application.</Text>
+            </Layout>
+          </SafeAreaView>
         </ApplicationProvider>
       );
     } else {
       return (
         <ApplicationProvider mapping={mapping} theme={dark}>
-          <Layout>
-            {Platform.OS === 'ios' && <StatusBar barStyle={'default'}/>}
-            {Platform.OS === 'android' && <Layout style={{ marginTop: StatusBar.currentHeight }} />}
-          </Layout>
-          <Layout level='3' style={styles.container}>
-            <Layout level='1' style={styles.cameraContainer}>
-              {/* <RNCamera style={[styles.camera, { width: windowWidth, height: windowWidth }]}></RNCamera> */}
+          <SafeAreaView style={[styles.container, { backgroundColor: global.theme['background-basic-color-1'] }]}>
+            <Layout>
+              {Platform.OS === 'ios' && <StatusBar barStyle={global.theme == light ? 'dark-content' : 'light-content'} />}
+              {Platform.OS === 'android' && <Layout style={{ marginTop: StatusBar.currentHeight }} />}
             </Layout>
-            <Layout level='2' style={styles.buttonContainer}>
-              <Button style={styles.button}>Capture</Button>
+            <Layout level='3' style={styles.container}>
+              <Layout level='2' style={styles.cameraContainer}>
+                <Camera style={[styles.camera, { width: '100%', height: '100%' }]}
+                  ref={ref => { this.camera = ref; }}
+                  type={this.state.cameraType}
+                  autoFocus={Camera.Constants.AutoFocus.on}
+                  whiteBalance={Camera.Constants.WhiteBalance.auto} />
+              </Layout>
+              <Layout level='2' style={styles.statusContainer}>
+                <Text style={styles.statusText}>{this.state.photoUri == '' ? DEFAULT_STATUS_TEXT : SNAPSHOT_TAKEN_STATUS_TEXT + this.state.photoUri}</Text>
+              </Layout>
+              <Layout level='2' style={styles.buttonContainer}>
+                <Button style={styles.button} onPress={this.takePicture}>Capture</Button>
+              </Layout>
             </Layout>
-          </Layout>
+          </SafeAreaView>
         </ApplicationProvider>
       );
     }
@@ -77,9 +86,6 @@ export default class App extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   cameraContainer: {
     flex: 1,
@@ -92,7 +98,20 @@ const styles = StyleSheet.create({
     flex: 1,
     borderRadius: 10,
   },
+  statusContainer: {
+    marginHorizontal: 8,
+    marginBottom: 8,
+    borderRadius: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  statusText: {
+    margin: 8,
+  },
   buttonContainer: {
+    marginHorizontal: 8,
+    marginBottom: 8,
     borderRadius: 10,
     flexDirection: 'row',
     alignItems: 'center',
