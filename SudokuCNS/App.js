@@ -7,6 +7,7 @@ import * as Permissions from 'expo-permissions';
 import { Camera } from 'expo-camera';
 
 const GRANTED = 'granted';
+const PERMISSION_NEEDED_TEXT = 'Please enable camera permissions before using this application.';
 const DEFAULT_STATUS_TEXT = 'Take a picture of your sudoku puzzle';
 const SNAPSHOT_TAKEN_STATUS_TEXT = 'Snapshot of your sudoku puzzle is available at: ';
 
@@ -48,7 +49,7 @@ export default class App extends React.Component {
         <ApplicationProvider mapping={mapping} theme={dark}>
           <SafeAreaView>
             <Layout level='3' style={styles.container}>
-              <Text>Please enable camera permissions before using this application.</Text>
+              <Text>{PERMISSION_NEEDED_TEXT}</Text>
             </Layout>
           </SafeAreaView>
         </ApplicationProvider>
