@@ -40,3 +40,9 @@ The following are links to resources that we have identified that will be essent
 6. "How to Use OpenCV in React Native for Image OpenCV Processing - Blog Brainhub.eu", Blog Brainhub.eu, 2020. [Online]. Available: https://brainhub.eu/blog/opencv-react-native-image-processing/ . [Accessed: 30- Jan- 2020].
 7. "brainhubeu/react-native-opencv-tutorial", GitHub, 2020. [Online]. Available: https://github.com/brainhubeu/react-native-opencv-tutorial . [Accessed: 30- Jan- 2020].
 8. "Build a Multi-Digit Detector with Keras and OpenCV", Medium, 2020. [Online]. Available: https://towardsdatascience.com/build-a-multi-digit-detector-with-keras-and-opencv-b97e3cd3b37 . [Accessed: 30- Jan- 2020].
+
+## Project Setup
+Note: Make sure you have [Nodejs](https://nodejs.org/en/) installed, [Expo](https://expo.io/) app installed on the mobile device.
+1. Navigate to the /SudokuCNS folder.
+2. Enter: `npm install` - this will download and install the dependencies.
+3. Enter: `npm start` - this will launch an expo server that you can use to test the application.
