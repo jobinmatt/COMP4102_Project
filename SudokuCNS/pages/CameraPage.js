@@ -37,12 +37,12 @@ export default class CameraPage extends React.Component {
         }
     };
 
-    navigateToResultsPage = () => {
-        this.props.navigation.navigate("ResultsPage");
-    }
-
     onPictureSaved = async photo => {
         this.setState({ photoUri: photo.uri });
+    }
+
+    navigateToResultsPage = () => {
+        this.props.navigation.navigate("ResultsPage", this.state.photoUri);
     }
 
     render() {

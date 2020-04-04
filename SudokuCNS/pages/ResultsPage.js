@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 import { Layout, TopNavigation, TopNavigationAction, Text, Button, } from '@ui-kitten/components';
 import { ArrowBackIcon } from "../assets/icons/icons.js";
+import Grid from "../UIComponents/Grid.js";
 
 const PAGE_TITLE = 'Solution'
 
@@ -9,7 +10,12 @@ export default class ResultsPage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            values: [],
         };
+    }
+
+    componentDidMount() {
+
     }
 
     render() {
@@ -26,7 +32,8 @@ export default class ResultsPage extends React.Component {
                     alignment="center"
                     leftControl={renderMenuAction()}
                 />
-                <Layout level='3' style={styles.container}>
+                <Layout level='2' style={styles.container}>
+                    <Grid values={this.state.values} />
                 </Layout>
             </React.Fragment>
         );
