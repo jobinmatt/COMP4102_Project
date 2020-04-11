@@ -5,9 +5,13 @@ import imutils
 import numpy
 import argparse
 import cv2
-
+from ocr import TesseractInstaller
+# needs to be global to keep state. Otherwise it will download every time I make a request.
+ocr = TesseractInstaller()
 
 def detect_text(request):
+    # install tesseract only if it does not exist.
+    ocr.installTesseract()
     # load the input image and grab the image dimensions
     image = cv2.imread(args["image"])
     orig = image.copy()
@@ -64,7 +68,7 @@ def detect_text(request):
         endY = min(origH, endY + (dY * 2))
         # extract the actual padded ROI
         roi = orig[startY:endY, startX:endX]
-        # in order to apply Tesseract v4 to OCR text we must supply
+        # in order to apply Tesseract v4 to OCR text lswe must supply
         # (1) a language, (2) an OEM flag of 4, indicating that the we
         # wish to use the LSTM neural net model for OCR, and finally
         # (3) an OEM value, in this case, 7 which implies that we are

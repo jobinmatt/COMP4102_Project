@@ -2,7 +2,7 @@ import cv2
 import operator
 import numpy as np
 from matplotlib import pyplot as plt
-
+import pytesseract
 from simpleocr.files import open_image
 from simpleocr.segmentation import ContourSegmenter
 from simpleocr.feature_extraction import SimpleFeatureExtractor
@@ -386,16 +386,16 @@ def loadModel():
 
 
 if __name__ == '__main__':
-    segmenter = ContourSegmenter(blur_y=5, blur_x=5, block_size=11, c=10)
-    extractor = SimpleFeatureExtractor(feature_size=10, stretch=False)
-    classifier = KNNClassifier()
-    ocr = OCR(segmenter, extractor, classifier)
+    # segmenter = ContourSegmenter(blur_y=5, blur_x=5, block_size=11, c=10)
+    # extractor = SimpleFeatureExtractor(feature_size=10, stretch=False)
+    # classifier = KNNClassifier()
+    # ocr = OCR(segmenter, extractor, classifier)
 
-    ocr.train(open_image('digits1'))
-    ocr.train(open_image('pittrain'))
-    ocr.train(open_image('ocrtrain'))
-    test_image = open_image('original.jpg')
-    test_chars, test_classes, test_segments = ocr.ocr(
-        test_image, show_steps=False)
+    # ocr.train(open_image('digits1'))
+    # ocr.train(open_image('pittrain'))
+    # ocr.train(open_image('ocrtrain'))
+    # test_image = open_image('original.jpg')
+    # test_chars, test_classes, test_segments = ocr.ocr(
+    #     test_image, show_steps=False)
     # print(test_chars[0])
     parse_grid('./original.jpg', test_chars)
