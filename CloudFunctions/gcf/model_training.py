@@ -12,10 +12,13 @@ from keras.layers import MaxPool2D
 from keras.utils import to_categorical
 from keras.optimizers import Adam, SGD
 import scipy.io as sio
- 
-mat_contents = sio.loadmat("../train_32x32.mat")
+"""
+Desc: This is the the CNN classifier model training environemt. It is VGG-16 Net Architecture. 
+We were unable to use this due to lack computational capacity.  
+"""
+mat_contents = sio.loadmat("../train_32x32.mat") # can get trainning data from http://ufldl.stanford.edu/housenumbers/
 classes = 11
-mat_test = sio.loadmat("../test_32x32.mat")
+mat_test = sio.loadmat("../test_32x32.mat") # testing data from http://ufldl.stanford.edu/housenumbers/
 X_train = mat_contents["X"]
 X_train = X_train.reshape(X_train.shape[3], X_train.shape[0], X_train.shape[1], X_train.shape[2])
 X_train_grayscale = np.zeros(X_train.shape[:-1])
