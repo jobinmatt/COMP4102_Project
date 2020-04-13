@@ -27,7 +27,37 @@ There might be few other challenges that we will have to overcome, this includes
 
 In order to deal with these issues, multiple OpenCV image operations might be needed to be performed such as increasing or decreasing brightness, contrast, sharpness, blur and other operations such as edge detection and corner detection on the supplied image. If the provided image is unusable the user will have to retake the image.
 
-Another challenge we might face is incomplete puzzles, we cannot always assume that the user will provide us with a clean sudoku puzzle. This means that we have to detect which numbers the user has inputted and which numbers were part of the original puzzle. However, this may prove to be too challenging so we may not be able to tackle this challenge in the provided timeline. A possible solution to this however could be by combining the a machine learning model trained using the MNIST dataset and one trained on the SVHN dataset. The SVHN dataset can help identify computer printed digits. We can use these two models to detect all numbers in the puzzle and then use the one with the higher confidence rating to see if it is written by the user or printed by a computer.Additionally, validating if the puzzle is solvable or not provides another dimension of complexity to the application.
+Another challenge we might face is incomplete puzzles, we cannot always assume that the user will provide us with a clean sudoku puzzle. This means that we have to detect which numbers the user has inputted and which numbers were part of the original puzzle. However, this may prove to be too challenging so we may not be able to tackle this challenge in the provided timeline. A possible solution to this however could be by combining the a machine learning model trained using the MNIST dataset and one trained on the SVHN dataset. The SVHN dataset can help identify computer printed digits. We can use these two models to detect all numbers in the puzzle and then use the one with the higher confidence rating to see if it is written by the user or printed by a computer. Additionally, validating if the puzzle is solvable or not provides another dimension of complexity to the application.
+
+## Approach
+In the frontend, the user opens the app and captures an image of the sudoku puzzle, this puzzle is then sent to Google Cloud Storage, which triggers a Cloud Function in the backend.
+
+In the backend of the application, numerous OpenCV operations are performed in order to preprocess the image and get it ready for text detection. First, the original image is loaded and converted to greyscale. This way we only have one channel to worry about and a lot less processing. After the image is loaded, it is then blurred by OpenCV’s GaussianBlur() function, which removes the noise and unwanted pixels as illustrated in Figure 1.  
+
+![Figure 1: Image after Gaussian Blur](images/1.png "Figure 1: Image after Gaussian Blur")
+
+The next step is to remove the grey, meaning removing everything that is not important. For example, the shadow, the background color of each grid, and any details around the puzzle. This is illustrated in Figure 2 using adaptive thresholding, the main features of the puzzle are extracted. 
+
+![Figure 2: Image after Adaptive Threshold](images/2.png "Figure 2: Image after Adaptive Threshold")
+
+The puzzle is then inverted, illustrated in Figure 3 so that the gridlines have a non-zero value, this is due to the choice of OCR engine. 
+
+![Figure 3: Image after Inversion](images/3.png "Figure 3: Image after Inversion")
+
+In Figure 3, some of the grid lines do not appear as a line and have a few breaks. Making all the white pixels thicker with a dilation method, most likely, will make most of the grid lines visible with no breaks, as seen in Figure 4 [3]. 
+
+![Figure 4: Image after Dilation](images/4.png "Figure 4: Image after Dilation")
+
+Dilation is the last step to the pre-processing, and the next step is to find the actual puzzle and warp the perspective. Finding the puzzle is done by gathering all the corners in the pre-processed image. A sudoku puzzle is always a large square, with 81 smalls ones inside it. Therefore, finding the largest polygon in the image is also finding the puzzle. To find the largest puzzle, a contouring approach is used with OpenCV’s findContours() [4]. The function findContours() returns a list containing a list of points. This list is then sorted by the area of the contours in descending order. Meaning that the largest polygon is the first element in the sorted list of contours with the largest area. Finally, iterating over the points in the polygon’s contours is needed to find the four corners of the square. The top left is found by getting the smallest x - y value of the point.  The top right is found by getting the largest x - y value of the point. Similarly, the bottom left is found by getting the smallest x + y value of the point. The bottom right is found by getting the largest x + y value of the point. With these coordinates, the original image can be cropped and warped. OpenCV’s warpPerspective() and getPerpectiveTransform() made this simple, and the puzzle then looks like Figure 5. 
+
+![Figure 5: Puzzle found from Image](images/5.png "Figure 5: Puzzle found from Image")
+
+After finding the boundaries of the puzzle, the actual values in the puzzle need to be put into memory in the form of a 2-dimensional list of integers. To do this we need to infer the grid, which is done by simply taking the image and dividing the rows and columns by nine, and then placing each sub-image into a list of size 81. The list reads left-right instead of top-down. 
+
+Each sub-image of the puzzle is put through the same preprocessing at the beginning and then fed to the OCR engine. As machine learning is not part of this course, achieving a classification model with similar accuracy to the OCR engine used with the knowledge from this course, it is unlikely to be achieved within the time provided for this project. That is the main reasoning for using Tesseract, Google’s OCR engine. 
+Once all the sub-images have been recognized, they are put into a 2-dimensional array, to then be solved, and returned. The approach used to solve the puzzle was a brute-force method. The algorithm puts a number that does not exist in the row, column, and grid. It will then continue to the next position. If no number can fit in that position, the algorithm must back-track to the errored position, increment the value, and continue forward. Once every position is filled then the algorithm is completed.
+
+
 Some of the resources that we need to solve and overcome some of these challenges can be seen in the Project Resources section below.
 
 ## Project Resources
