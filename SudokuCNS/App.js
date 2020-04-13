@@ -5,11 +5,18 @@ import { EvaIconsPack } from '@ui-kitten/eva-icons';
 import * as eva from '@eva-design/eva';
 import { light, dark } from './UIComponents/Themes.js';
 import RootNavigation from './navigation/RootNavigation.js';
+import * as firebase from 'firebase';
+import FirebaseConfig from './config/FirebaseConfig';
 
 export default class App extends React.Component {
   constructor(props) {
     super(props);
     global.theme = dark;
+
+    if (!firebase.apps.length) { // Check to see if Firebase app is already initialized on Android
+      app = firebase.initializeApp(FirebaseConfig.firebaseConfig);
+    }
+    
   }
 
   render() {

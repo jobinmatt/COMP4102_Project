@@ -33,16 +33,18 @@ export default class CameraPage extends React.Component {
 
     takePicture = () => {
         if (this.camera) {
-            this.camera.takePictureAsync({ onPictureSaved: this.onPictureSaved }).then(this.navigateToResultsPage);
+            this.camera.takePictureAsync({ onPictureSaved: this.onPictureSaved });
         }
     };
 
     onPictureSaved = async photo => {
         this.setState({ photoUri: photo.uri });
+        this.navigateToResultsPage(photo.uri);
     }
 
-    navigateToResultsPage = () => {
-        this.props.navigation.navigate("ResultsPage", this.state.photoUri);
+    navigateToResultsPage = (photoUri) => {
+        console.log('CameraPage: ',photoUri)
+        this.props.navigation.navigate("ResultsPage", { photoUri: photoUri });
     }
 
     render() {
@@ -63,10 +65,11 @@ export default class CameraPage extends React.Component {
                     />
                     <Layout level='3' style={styles.container}>
                         <Layout level='2' style={styles.cameraContainer}>
-                            <Camera style={[styles.camera, { width: '100%', height: '100%' }]}
+                            <Camera style={styles.camera}
                                 ref={ref => { this.camera = ref; }}
                                 type={this.state.cameraType}
                                 autoFocus={Camera.Constants.AutoFocus.on}
+                                ratio={'1:1'}
                                 whiteBalance={Camera.Constants.WhiteBalance.auto} />
                         </Layout>
                         <Layout level='2' style={styles.statusContainer}>
@@ -94,7 +97,8 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     camera: {
-        flex: 1,
+        aspectRatio: 1,
+        width: '100%',
         borderRadius: 10,
     },
     statusContainer: {
