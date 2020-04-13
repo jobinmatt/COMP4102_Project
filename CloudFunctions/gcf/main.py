@@ -1,22 +1,42 @@
-from flask import escape
+from flask import escape, Flask, request, Response
+import jsonpickle
+import urllib.request
+import cv2
+import pytesseract
+import imutils
+import numpy as np
+import argparse
+from ocr import TesseractInstaller
+from sudoku import SudokuExtractor
 
-def hello_http(request):
-    """HTTP Cloud Function.
-    Args:
-        request (flask.Request): The request object.
-        <http://flask.pocoo.org/docs/1.0/api/#flask.Request>
-    Returns:
-        The response text, or any set of values that can be turned into a
-        Response object using `make_response`
-        <http://flask.pocoo.org/docs/1.0/api/#flask.Flask.make_response>.
-    """
+# needs to be global to keep state. Otherwise it will download every time I make a request.
+ocr = TesseractInstaller()
+
+def detect_text(request):
+    # install tesseract only if it does not exist.
+    ocr.installTesseract()
+
+    # actually handle the request now
     request_json = request.get_json(silent=True)
     request_args = request.args
 
-    if request_json and 'name' in request_json:
-        name = request_json['name']
-    elif request_args and 'name' in request_args:
-        name = request_args['name']
-    else:
-        name = 'World'
-    return 'Hello {}!'.format(escape(name))
+
+    bucket = 'sudokucapnsolve.appspot.com'
+    file = 'uploads/photo.jpg'
+    gcs_url = 'https://%(bucket)s.storage.googleapis.com/%(file)s' % {'bucket':bucket, 'file':file}
+
+    resp = ''
+    with urllib.request.urlopen(gcs_url) as url:
+        resp= url.read()
+    image = np.asarray(bytearray(resp), dtype="uint8")
+    image = cv2.imdecode(image, cv2.IMREAD_GRAYSCALE)
+    extractor = SudokuExtractor(image)
+    sudoku_puzzle = extractor.get_puzzle()
+    extractor.solve(sudoku_puzzle) # its pass by ref, so i dont need to get the board again
+
+    response = {'message': sudoku_puzzle}
+    response_pickled = jsonpickle.encode(response)
+    return Response(response=response_pickled, status=200, mimetype="application/json")
+
+    
+
