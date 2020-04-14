@@ -60,7 +60,7 @@ Once all the sub-images have been recognized, they are put into a 2-dimensional 
 Some of the resources that we need to solve and overcome some of these challenges can be seen in the Project Resources section below.
 
 ## Video Presentation/Demo
-[![Presentation/Demo Video](/images/thumbnail.png)](/Demo.m4v)
+[![Presentation/Demo Video](/images/thumbnail.png)](/Demo.m4v?raw=true)
 
 ## Project Resources
 The following are links to resources that we have identified that will be essential to complete this project:
