@@ -57,8 +57,10 @@ After finding the boundaries of the puzzle, the actual values in the puzzle need
 Each sub-image of the puzzle is put through the same preprocessing at the beginning and then fed to the OCR engine. As machine learning is not part of this course, achieving a classification model with similar accuracy to the OCR engine used with the knowledge from this course, it is unlikely to be achieved within the time provided for this project. That is the main reasoning for using Tesseract, Google’s OCR engine. 
 Once all the sub-images have been recognized, they are put into a 2-dimensional array, to then be solved, and returned. The approach used to solve the puzzle was a brute-force method. The algorithm puts a number that does not exist in the row, column, and grid. It will then continue to the next position. If no number can fit in that position, the algorithm must back-track to the errored position, increment the value, and continue forward. Once every position is filled then the algorithm is completed.
 
-
 Some of the resources that we need to solve and overcome some of these challenges can be seen in the Project Resources section below.
+
+## Video Presentation/Demo
+[![Presentation/Demo Video](/images/thumbnail.png)](/Demo.m4v?raw=true)
 
 ## Project Resources
 The following are links to resources that we have identified that will be essential to complete this project:
