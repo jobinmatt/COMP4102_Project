@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, TouchableHighlightBase } from 'react-native';
-import { Layout, TopNavigation, TopNavigationAction, Text, Button, } from '@ui-kitten/components';
+import { Layout, TopNavigation, TopNavigationAction, Text, Button, Spinner } from '@ui-kitten/components';
 import { ArrowBackIcon } from "../assets/icons/icons.js";
 import Grid from "../UIComponents/Grid.js";
 import * as firebase from "firebase";
@@ -12,6 +12,7 @@ export default class ResultsPage extends React.Component {
         super(props);
         this.state = {
             values: [],
+            ready: false,
         };
     }
 
@@ -75,7 +76,7 @@ export default class ResultsPage extends React.Component {
                     leftControl={renderMenuAction()}
                 />
                 <Layout level='2' style={styles.container}>
-                    <Grid values={this.state.values} />
+                    {this.state.values != [] ? <Grid values={this.state.values} /> : <Layout level='2' style={styles.spinnerContainer}><Spinner /></Layout>}
                 </Layout>
             </React.Fragment>
         );
@@ -85,5 +86,10 @@ export default class ResultsPage extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+    },
+    spinnerContainer: {
+        margin: '50%',
+        justifyContent: 'center',
+        alignItems: 'center'
     },
 });

@@ -12,7 +12,7 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
     global.theme = dark;
-
+    console.disableYellowBox = true;
     if (!firebase.apps.length) { // Check to see if Firebase app is already initialized on Android
       app = firebase.initializeApp(FirebaseConfig.firebaseConfig);
     }
