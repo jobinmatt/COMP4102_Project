@@ -81,3 +81,4 @@ Note: Make sure you have [Nodejs](https://nodejs.org/en/) installed, [Expo](http
 1. Navigate to the /SudokuCNS folder.
 2. Enter: `npm install` - this will download and install the dependencies.
 3. Enter: `npm start` - this will launch an expo server that you can use to test the application.
+4. Scan the barcode that is displayed using your mobile device, this should launch the app on your device.
