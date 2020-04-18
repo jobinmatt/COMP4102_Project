@@ -59,6 +59,9 @@ Once all the sub-images have been recognized, they are put into a 2-dimensional 
 
 Some of the resources that we need to solve and overcome some of these challenges can be seen in the Project Resources section below.
 
+## Edge Cases
+There are certian cases in which the Tesseract OCR engine might incorrectly identify digits such as '8' to a 'B' or '9' as 'g'. This is due to the fact that the version of Tesseract used does not support limiting the recognized characters to just numbers (whitelisting characters is not supported with the LSTM model). This can be fixed in the future by updating the OCR version once the incompatibility issues are resolved. Currently, if one of these edge cases are hit during the solving process, the solving process will fail. 
+
 ## Video Presentation/Demo
 [![Presentation/Demo Video](/images/thumbnail.png)](/Demo.m4v?raw=true)
 
